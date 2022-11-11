@@ -6,6 +6,7 @@ import { ajax } from 'rxjs/ajax';
 // eslint-disable-next-line import/extensions
 import './rxVK.js';
 
+
 const url = 'https://oauth.vk.com/authorize?client_id=51466186&display=popup&redirect_uri=https://oauth.vk.com/blank.html&scope=offline&response_type=token&v=5.131&state=123456';
 
 const search = document.getElementById('search');
