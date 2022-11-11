@@ -3,7 +3,7 @@ import {
   switchMap, map, debounceTime, distinctUntilChanged, mergeMap, tap, catchError, filter,
 } from 'rxjs/operators';
 import { ajax } from 'rxjs/ajax';
-// import {from} from "rxjs/src/internal/observable/from";
+import './rxVK';
 
 const url = 'https://oauth.vk.com/authorize?client_id=51466186&display=popup&redirect_uri=https://oauth.vk.com/blank.html&scope=offline&response_type=token&v=5.131&state=123456';
 
@@ -43,7 +43,9 @@ button.addEventListener('click', () => {
     if (response.status === 'connected') {
       console.log('YES!');
       console.log(response.session.mid);
-      VK.Api.call('users.get', { user_ids: response.session.mid, v: '5.131' },
+      VK.Api.call(
+        'users.get',
+        { user_ids: response.session.mid, v: '5.131' },
         (r) => {
           console.log(`Здравствуй ${r.response[0].first_name} ${r.response[0].last_name}!`);
           console.log(r);
