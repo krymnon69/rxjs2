@@ -1,18 +1,18 @@
-const path = require('path')
-const HTMLPlugin = require('html-webpack-plugin')
+const path = require('path');
+const HTMLPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
   output: {
     filename: 'bundle.js',
-    path: path.join(__dirname, 'dist')
+    path: path.join(__dirname, 'dist'),
   },
   devServer: {
-    port: 4200
+    port: 4400,
   },
   plugins: [
     new HTMLPlugin({
-      template: './src/index.html'
-    })
-  ]
-}
+      template: './src/index.html',
+    }),
+  ],
+};
