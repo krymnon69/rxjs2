@@ -1,0 +1,90 @@
+/* обнуление стилей */ /* ---------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+    /*padding: 0;*/
+    /*margin: 0;*/
+    /*border: 0;*/
+}
+*,
+*:before,
+*:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+a {
+    text-decoration: none;
+}
+:focus,
+:active {
+    outline: none;
+}
+a:focus,
+a:active {
+    outline: none;
+}
+/* выравнивание изображение по верху */
+img {
+    vertical-align: top;
+}
+ul,
+ol,
+li {
+    list-style: none;
+}
+/* принимает свойства родительского элемента (inherit) */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: inherit;
+    font-size: inherit;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    line-height: 1; /* устанавливает величину пространства между строками */
+
+    -ms-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    overflow: hidden;
+    background: #EDEEF0;
+    margin: 0;
+}
+
+.container{
+    max-width: 1320px;
+    margin: 0 auto;
+}
+
+.autorization{
+    min-height: 48px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #fff;
+}
+
+.autorization .button{
+    margin: 20px;
+}
+
+.autorization input{
+    min-width: 230px;
+    min-height: 32px;
+    background:#EDEEF0;
+    border-radius: 10px;
+}
+
+
+body p1 {
+    font-weight: bold;
+    font-size: 20px;
+}
+

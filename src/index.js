@@ -3,9 +3,9 @@ import {
   switchMap, map, debounceTime, distinctUntilChanged, mergeMap, tap, catchError, filter,
 } from 'rxjs/operators';
 import { ajax } from 'rxjs/ajax';
-// eslint-disable-next-line import/extensions
+
 import './rxVK.js';
-import './rxVK.js';
+import './index.css'
 
 const url = 'https://oauth.vk.com/authorize?client_id=51466186&display=popup&redirect_uri=https://oauth.vk.com/blank.html&scope=offline&response_type=token&v=5.131&state=123456';
 
@@ -37,7 +37,7 @@ const stream$ = fromEvent(search, 'input')
 VK.init({
   apiId: 51473070,
 });
-VK.UI.button('auto');
+// VK.UI.button('auto');
 
 button.addEventListener('click', () => {
   VK.Auth.login((response) => {
@@ -93,3 +93,13 @@ stream$.subscribe((user) => {
 `;
   result.insertAdjacentHTML('beforeend', html);
 });
+
+
+function func([path, value]) {
+  const obj = path.split('.').reduceRight((acc,el) =>{
+    return {[el]:acc}
+  }, value)
+  console.log(obj);
+}
+
+func(["user.phone.adress.lossles", "+792347247234"])

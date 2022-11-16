@@ -6,26 +6,26 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>RxJS</title>
+  <script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
 </head>
-<body style="padding-top: 3rem;">
 
 <div class="container">
-  <div class="autorization" id="auto"></div>
-  <div class="an_autorization">
-    <button type="button" id="an_auto"> exit </button>
+
+  <div class="autorization">
+    <button type="button" id = "auto"> Вход ВК </button>
+      <input maxlength="30" onfocus="this.value=''" placeholder="Поиск"/>
+    <button type="button" id = "an_auto"> Обнулить сессию (токен, id) </button>
   </div>
-  <div class="input-field">
-    <input type="text" id = "search">
-    <label for="search">Поиск пользователей VK</label>
+  <div class = 'profile'>
+    <button type="button" id = "user"> Показать страницу </button>
   </div>
 
-  <div class="row">
-    <div class="col s6 offset-s3" id = "result">
-    </div>
-  </div>
+<!--  <div class="row">-->
+<!--    <div class="col s6 offset-s3" id = "result">-->
+<!--    </div>-->
+<!--  </div>-->
 </div>
-<!--<script  src="rxVK.js"></script>-->
-<!--<script type="module" src="rxVK.js"></script>-->
-<script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
+
+
 </body>
 </html>
