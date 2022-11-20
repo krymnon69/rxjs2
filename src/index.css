@@ -68,7 +68,7 @@ body {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background: #fff;
+    background: #4A76A8;
 }
 
 .autorization .button{
@@ -79,12 +79,42 @@ body {
     min-width: 230px;
     min-height: 32px;
     background:#EDEEF0;
-    border-radius: 10px;
+    border-radius: 30px;
 }
 
 
-body p1 {
+body h1 {
     font-weight: bold;
     font-size: 20px;
 }
 
+.profile{
+    background-color: #EDEEF0;
+    margin: 25px 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.profileImg {
+    /*flex: 1 1 auto;*/
+    padding: 15px 15px 45px 15px;
+    background-color: #FFFFFF;
+}
+
+.profile__name {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 15px;
+    flex-direction: row;
+    background-color: #FFFFFF;
+}
+
+.profile__info {
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    margin: 0 15px;
+    text-shadow: 1px 1px 5px silver;
+    flex: 2 1 auto;
+    /*padding: 15px 15px 45px 15px;*/
+    background-color: #FFFFFF;
+}

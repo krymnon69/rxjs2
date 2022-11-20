@@ -5,28 +5,34 @@ import {
   switchMap, map, debounceTime, distinctUntilChanged, mergeMap, tap, catchError, filter,
 } from 'rxjs/operators';
 
-// VK.UI.button('auto');
-
-// const buttonExit = document.querySelector('.an_autorization');
+// const btnExit = document.querySelector('.an_autorization');
 // localStorage.setItem('token', 'null');
+// localStorage.setItem('userId', 'null');
+//
 
+if (!localStorage.getItem('token')) {
+  localStorage.setItem('token', 'null');
+  localStorage.setItem('userId', 'null');
+  localStorage.setItem('resultProfile', 'null');
+}
 
-// const basePort = document.location.port;
-// const currentUrl = document.location.href;
-
-function createElement(tag = 'div', className = '', src = '') {
+function createElement(tag = 'div', className= '', src = '', innerHTML = '') {
   const el = document.createElement(`${tag}`);
   el.className = className;
   el.src = src;
+  el.innerHTML = innerHTML
   document.body.appendChild(el);
   return el;
 }
 
 class Token {
   #basePort = document.location.port;
+
   #url = 'https://oauth.vk.com/authorize?client_id=51473070&display=popup&'
     + `redirect_uri=http://localhost:${this.#basePort}/&scope=offline&response_type=token&v=5.131`;
+
   #Token = localStorage.getItem('token');
+
   #userId = localStorage.getItem('userId');
 
   login() {
@@ -40,13 +46,16 @@ class Token {
       const ansUrl = new URLSearchParams(document.location.hash);
       localStorage.setItem('token', ansUrl.get('#access_token'));
       localStorage.setItem('userId', ansUrl.get('user_id'));
-      window.location = `http://localhost:${this.#basePort}/#`;
+      window.location = `http://localhost:${this.#basePort}/#id${ansUrl.get('user_id')}`;
+      // window.preventDefault()
     }
   }
 
   resetToken() {
     localStorage.setItem('token', 'null');
     localStorage.setItem('userId', 'null');
+    localStorage.setItem('resultProfile', 'null');
+    document.location.hash = ''
   }
 
   get token() {
@@ -71,126 +80,82 @@ class MethodRequest extends Token {
     + `fields=${this.params}&`
     + `access_token=${this.token}&v=5.131`;
 
-    createElement('script', '', `${url}&callback=callbackFunc`);
+    createElement('script', '', `${url}&callback=profile`);
   }
+}
+
+window.profile = function (res) {
+  localStorage.setItem('resultProfile', JSON.stringify(res));
+  new GetInfo(res).createProfile();
 }
 
 class GetInfo {
-  callbackFunc (res) {
-    // const src = res.response[0];
-    // const image = document.createElement('img');
-    // image.src = src.photo_200;
-    // document.body.appendChild(image);
-    const src = res.response[0];
-    // createElement('p1').innerHTML = `${src.first_name}
-    // ${src.last_name} online: ${src.online}
-    // <br> id: ${src.id}
-    // <br> Количество друзей: ${src.counters.friends}
-    // <br> Количество аудио: ${src.counters.photos}
-    // <br> Количество видео: ${src.counters.videos}`
-    const profile = createElement('div', 'profile');
-    profile.appendChild(createElement('img','',`${src.photo_200}`))
-    profile.appendChild(createElement('p1').innerHTML = `${src.first_name}
-    ${src.last_name} online: ${src.online}
-    <br> id: ${src.id}
-    <br> Количество друзей: ${src.counters.friends}
-    <br> Количество аудио: ${src.counters.photos}
-    <br> Количество видео: ${src.counters.videos}`)
+  constructor(options) {
+    this.source = options.response[0];
+  }
+
+  createProfile() {
+    const profile = document.querySelector('.profile')
+    const profileImg = profile.appendChild(createElement('div','profileImg'))
+    profileImg.appendChild(createElement('img','', `${this.source.photo_200}`))
+    const profileInfo = profile.appendChild(createElement('div', 'profile__info'))
+
+    const profileName = profileInfo.appendChild(createElement('div', 'profile__name'))
+
+
+    profileName.appendChild(createElement('h1','', '',
+      `${this.source.first_name} ${this.source.last_name}`))
+
+
+    const options = {
+      year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric',second: 'numeric', hour12: false
+    };
+    const date = new Date (this.source.last_seen.time*1000)
+    if (this.source.online !== 1)
+      profileName.appendChild(createElement('h2','', '', `Заходил ${date.toLocaleDateString('UTC', options)}`))
+    if (this.source.online === 1)
+      profileName.appendChild(createElement('h2','', '', `Online`))
+
+    const profileInf = profileInfo.appendChild(createElement('div', 'profile__info'))
+    const info = `
+        <br> День рождения: ${this.source.bdate}
+        <br> Город: ${this.source.city.title}
+        <br> Образование: ${this.source.universities[0].name}`
+    profileInf.appendChild(createElement('p1', '','', info));
   }
 }
 
-window.callbackFunc = (res) => {
-  return new GetInfo().callbackFunc(res)
-}
-
-
-const buttonInput = document.getElementById('auto');
-const buttonExit = document.getElementById('an_auto');
-const user = document.getElementById('user');
+const btnAutorization = document.getElementById('auto');
+const btnExit = document.getElementById('an_auto');
 
 window.addEventListener('load', () => {
   new Token().createToken();
+
+  if (localStorage.getItem('token') !== 'null') {
+    const user = {
+      method: 'users.get',
+      params: 'online,last_seen,bdate,city,universities,photo_200,counters',
+    };
+    new MethodRequest(user).createSendRequest();
+  }
 });
 
-buttonInput.addEventListener('click', () => {
+btnAutorization.addEventListener('click', () => {
   new Token().login();
 });
 
-buttonExit.addEventListener('click', () => {
+btnExit.addEventListener('click', () => {
   new Token().resetToken();
 });
 
-user.addEventListener('click', () => {
-  new MethodRequest({
-    method: 'users.get',
-    params: 'online,photo_200,sex,counters',
-  }).createSendRequest();
-});
 
 
 
-
-
-// window.callbackFunc = (res) => {
-//   const div = document.createElement('div');
-//   const info = document.createElement('div');
-//   div.className = 'profile';
-//   document.body.appendChild(div);
-//   div.appendChild(info);
-//   const image = document.createElement('img');
-//   const p = document.createElement('p1');
-//   const src = res.response[0];
-//
-//   image.src = src.photo_200;
-//
-//   div.appendChild(image);
-//
-//   let sex;
-//
-//   if (src.sex === 1) { sex = 'Женщина'; } else { sex = 'Мужчина'; }
-//
-//   p.innerHTML = `${src.first_name}
-//     ${src.last_name} (${sex}) online: ${src.online}
-//     <br> id: ${src.id}
-//     <br> Количество друзей: ${src.counters.friends}
-//     <br> Количество аудио: ${src.counters.photos}
-//     <br> Количество видео: ${src.counters.videos}`;
-//   div.appendChild(p);
 //   // p.remove()
-//
 //   // Для замены элемента применяется метод replaceChild(newNode, oldNode)
-// };
 
 
-function sendRequest(url) {
-  // const script = document.createElement('script')
-  // script.src = `${url}&callback=callbackFunc`
-  // document.getElementsByTagName('head')[0].appendChild(script)
-}
-
-function createUrl(method) {
-  // return function (params){
-  //   const id = localStorage.getItem('userId')
-  //   const token = localStorage.getItem('token')
-  //   return `https://api.vk.com/method/${method}?`+
-  //     `user_ids=${id}&`+
-  //     `fields=${params}&`+
-  //     `access_token=${token}&v=5.131`
-  // }
-}
-
-function createToken() {
-  // const resUrl = new URLSearchParams(document.location.hash)
-  // const token = resUrl.get('#access_token')
-  // const user_id = resUrl.get('user_id')
-  // localStorage.setItem('token', token)
-  // localStorage.setItem('userId', user_id)
-  // if(document.location.hash !== 'null') {
-  //   document.location = `http://localhost:${basePort}/#`;
-  // }
-}
-
-// const stream$ = fromEvent(buttonInput, 'click')
+// const stream$ = fromEvent(btnAutorization, 'click')
 //   .pipe(
 //     map((element) => element.target.value),
 //     debounceTime(500),
