@@ -1,29 +1,20 @@
 import './index.css';
-import { ajax } from 'rxjs/ajax';
-import { fromEvent, interval } from 'rxjs';
-import {
-  switchMap, map, debounceTime, distinctUntilChanged, mergeMap, tap, catchError, filter,
-} from 'rxjs/operators';
+// import { ajax } from 'rxjs/ajax';
+// import { fromEvent, interval } from 'rxjs';
+// import {
+//   switchMap, map, debounceTime, distinctUntilChanged, mergeMap, tap, catchError, filter, window,
+// } from 'rxjs/operators';
+import elementCreate from './ElementCreate';
+import { profileCreate, removeProfile } from './ProfileCreate';
+import subscribesModalCreate from './Subscribes';
 
-// const btnExit = document.querySelector('.an_autorization');
-// localStorage.setItem('token', 'null');
-// localStorage.setItem('userId', 'null');
-//
-
-if (!localStorage.getItem('token')) {
+function resetStorage() {
   localStorage.setItem('token', 'null');
   localStorage.setItem('userId', 'null');
   localStorage.setItem('resultProfile', 'null');
 }
 
-function createElement(tag = 'div', className= '', src = '', innerHTML = '') {
-  const el = document.createElement(`${tag}`);
-  el.className = className;
-  el.src = src;
-  el.innerHTML = innerHTML
-  document.body.appendChild(el);
-  return el;
-}
+if (!localStorage.getItem('token')) resetStorage();
 
 class Token {
   #basePort = document.location.port;
@@ -38,7 +29,11 @@ class Token {
   login() {
     if (this.#Token === 'null') {
       window.location = this.#url;
-    } else console.log('Вы авторизированы!');
+      return;
+    }
+    const btnLogin = document.querySelector('.auto');
+    btnLogin.nextElementSibling.style.transform = 'scaleX(1)';
+    setTimeout(() => btnLogin.nextElementSibling.style.transform = 'scaleX(0)', 800);
   }
 
   createToken() {
@@ -51,13 +46,6 @@ class Token {
     }
   }
 
-  resetToken() {
-    localStorage.setItem('token', 'null');
-    localStorage.setItem('userId', 'null');
-    localStorage.setItem('resultProfile', 'null');
-    document.location.hash = ''
-  }
-
   get token() {
     return this.#Token;
   }
@@ -67,72 +55,82 @@ class Token {
   }
 }
 
+const autorization = document.querySelector('.autorization');
+
+autorization.addEventListener('click', (event) => {
+  if (event.target.closest('.auto')) new Token().login();
+  if (event.target.closest('.an_auto')) {
+    resetStorage();
+    removeProfile();
+  }
+});
+
 class MethodRequest extends Token {
   constructor(options) {
     super();
+    this.usId = options.usId;
     this.method = options.method;
+    this.offset = options.offset;
+    this.count = options.count;
     this.params = options.params;
   }
 
   createSendRequest() {
+    if (this.usId === '') this.usId = this.userId;
     const url = `https://api.vk.com/method/${this.method}?`
-    + `user_ids=${this.userId}&`
-    + `fields=${this.params}&`
-    + `access_token=${this.token}&v=5.131`;
+      + `user_ids=${this.usId}&`
+      + `offset=${this.offset}&`
+      + `count=${this.count}&`
+      + `fields=${this.params}&`
+      + `access_token=${this.token}&v=5.131`;
 
-    createElement('script', '', `${url}&callback=profile`);
+    if (this.method === 'users.get') elementCreate('script', '', '', `${url}&callback=profile`);
+    if (this.method === 'users.getFollowers') elementCreate('script', '', '', `${url}&callback=followers`);
   }
 }
 
-window.profile = function (res) {
-  localStorage.setItem('resultProfile', JSON.stringify(res));
-  new GetInfo(res).createProfile();
-}
+window.profile = (res) => profileCreate(res);
+window.followers = (res) => subscribesModalCreate(res);
 
-class GetInfo {
-  constructor(options) {
-    this.source = options.response[0];
-  }
+const counters = document.querySelector('.info__counters');
 
-  createProfile() {
-    const profile = document.querySelector('.profile')
-    const profileImg = profile.appendChild(createElement('div','profileImg'))
-    profileImg.appendChild(createElement('img','', `${this.source.photo_200}`))
-    const profileInfo = profile.appendChild(createElement('div', 'profile__info'))
+counters.addEventListener('click', (event) => {
+  if (event.target.closest('.counters-followers')) {
+    const modal = document.querySelector('.modal');
+    modal.style.display = 'block';
 
-    const profileName = profileInfo.appendChild(createElement('div', 'profile__name'))
-
-
-    profileName.appendChild(createElement('h1','', '',
-      `${this.source.first_name} ${this.source.last_name}`))
-
-
-    const options = {
-      year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric',second: 'numeric', hour12: false
+    const followersList = {
+      usId: '',
+      offset: '',
+      count: `${event.target.nextSibling.innerHTML}`,
+      method: 'users.getFollowers',
+      params: 'photo_100',
     };
-    const date = new Date (this.source.last_seen.time*1000)
-    if (this.source.online !== 1)
-      profileName.appendChild(createElement('h2','', '', `Заходил ${date.toLocaleDateString('UTC', options)}`))
-    if (this.source.online === 1)
-      profileName.appendChild(createElement('h2','', '', `Online`))
-
-    const profileInf = profileInfo.appendChild(createElement('div', 'profile__info'))
-    const info = `
-        <br> День рождения: ${this.source.bdate}
-        <br> Город: ${this.source.city.title}
-        <br> Образование: ${this.source.universities[0].name}`
-    profileInf.appendChild(createElement('p1', '','', info));
+    console.log();
+    new MethodRequest(followersList).createSendRequest();
   }
-}
 
-const btnAutorization = document.getElementById('auto');
-const btnExit = document.getElementById('an_auto');
+  if (event.target.closest('.counters-fotos')) {
+    console.log('2');
+  }
+
+  if (event.target.closest('.counters-friends')) {
+    console.log('3');
+  }
+
+  if (event.target.closest('.counters-groups')) {
+    console.log('4');
+  }
+});
 
 window.addEventListener('load', () => {
   new Token().createToken();
 
   if (localStorage.getItem('token') !== 'null') {
     const user = {
+      usId: '',
+      offset: '',
+      count: '',
       method: 'users.get',
       params: 'online,last_seen,bdate,city,universities,photo_200,counters',
     };
@@ -140,20 +138,15 @@ window.addEventListener('load', () => {
   }
 });
 
-btnAutorization.addEventListener('click', () => {
-  new Token().login();
-});
+// eslint-disable-next-line import/prefer-default-export
+export { MethodRequest };
 
-btnExit.addEventListener('click', () => {
-  new Token().resetToken();
-});
-
-
-
+// btn[0].addEventListener('click', () => {
+//   console.log('YES!');
+// })
 
 //   // p.remove()
 //   // Для замены элемента применяется метод replaceChild(newNode, oldNode)
-
 
 // const stream$ = fromEvent(btnAutorization, 'click')
 //   .pipe(

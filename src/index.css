@@ -2,9 +2,9 @@
 *,
 *::before,
 *::after {
-    /*padding: 0;*/
-    /*margin: 0;*/
-    /*border: 0;*/
+    padding: 0;
+    margin: 0;
+    border: 0;
 }
 *,
 *:before,
@@ -34,6 +34,7 @@ li {
     list-style: none;
 }
 /* принимает свойства родительского элемента (inherit) */
+
 h1,
 h2,
 h3,
@@ -53,9 +54,10 @@ body {
     -ms-text-size-adjust: 100%;
     -moz-text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
-    overflow: hidden;
+    /*overflow: hidden;*/
     background: #EDEEF0;
-    margin: 0;
+
+    font-family: Tahoma, 'Comic Sans MS', cursive;
 }
 
 .container{
@@ -69,52 +71,250 @@ body {
     justify-content: space-around;
     align-items: center;
     background: #4A76A8;
+    position: relative;
 }
 
-.autorization .button{
-    margin: 20px;
+.autorization h6 {
+    position: absolute;
+    left: 20%;
+    top: 35%;
+    will-change: transform; /*сообщаем браузеру что собираемся изменить это свойство */
+    transform: scaleX(0);
+    transition: transform .4s ease-in-out
 }
-
-.autorization input{
-    min-width: 230px;
-    min-height: 32px;
-    background:#EDEEF0;
-    border-radius: 30px;
-}
-
 
 body h1 {
     font-weight: bold;
     font-size: 20px;
 }
 
-.profile{
-    background-color: #EDEEF0;
-    margin: 25px 0;
-    display: flex;
-    justify-content: space-around;
+.button {
+    cursor: pointer;
+    /*border: none;*/
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 15px;
+    font-weight: 600;
+    /*box-shadow: 0 5px 0 #FFFFFF;*/
+    letter-spacing: 1px;
+    transition: background-color 0.3s ease 0s;
+
+    /*position: relative;*/
+}
+.button:hover {
+    background-color: #9098B5;
+}
+.button:active {
+    top: 3px;
+    left: 3px;
 }
 
-.profileImg {
+.autorization__input {
+    min-width: 230px;
+    /*min-height: 32px;*/
+    background:#EDEEF0;
+    border-radius: 30px;
+    padding: 5px 15px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.profile{
+    background-color: #EDEEF0;
+    margin: 25px auto;
+    display: flex;
+    justify-content: space-between;
+    max-width: 1010px;
+    /*min-width: 767px;*/
+}
+
+.profile__img {
+    display: inline-flex;
+    justify-content: center;
+    align-items: start;
     /*flex: 1 1 auto;*/
     padding: 15px 15px 45px 15px;
     background-color: #FFFFFF;
 }
 
-.profile__name {
-    display: flex;
+.info__name {
+    display: none;
     justify-content: space-between;
-    margin: 0 15px;
+    align-items: center;
+    padding: 15px;
     flex-direction: row;
+    border-bottom: 1px solid silver;
+
     background-color: #FFFFFF;
 }
 
 .profile__info {
+    /*display: none;*/
     /*display: flex;*/
     /*flex-direction: column;*/
-    margin: 0 15px;
+    margin-left: 20px;
     text-shadow: 1px 1px 5px silver;
-    flex: 2 1 auto;
+    flex: 1 1 auto;
     /*padding: 15px 15px 45px 15px;*/
     background-color: #FFFFFF;
+}
+
+.info__info {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.info__label {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 15px 100px 15px 15px;
+}
+
+.info__label h2 {
+    margin: 5px 0;
+}
+
+.info__item a {
+    margin: 5px 0;
+}
+
+.info__item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 15px;
+}
+
+.info__detail{
+    display: flex;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    height: 50px;
+    border-bottom: 1px solid silver;
+}
+
+.info__counters {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    justify-content: space-around;
+    /*margin: auto;*/
+    /*flex: 2 1 auto;*/
+    /*height: 100%;*/
+    padding: 15px;
+}
+
+.info__counters div {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /*border-radius: 50%;*/
+}
+
+.info__counters label {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 8px;
+    transition: background-color 0.3s ease;
+    /*border-radius: 20px;*/
+}
+
+.info__counters button {
+    position: absolute;
+    /*top: 0;*/
+    /*left: 0;*/
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    /*font-size: 0;*/
+    cursor: pointer;
+}
+
+.info__counters div:hover label {
+    background-color: #EDEEF0;
+}
+
+/* Модальный (фон) */
+.modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed; /* Оставаться на месте */
+    z-index: 1; /* Сидеть на вершине */
+    left: 0;
+    top: 0;
+    width: 101%; /* Полная ширина */
+    height: 100%; /* Полная высота */
+    overflow: auto; /* Включите прокрутку, если это необходимо */
+    background-color: rgb(0,0,0); /* Цвет запасной вариант */
+    background-color: rgba(0,0,0,0.5); /* Черный с непрозрачностью */
+    /*position: relative;*/
+}
+
+/* Модальное содержание/коробка */
+.modal-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background-color: #fff;
+    margin: 130px auto; /* 15% сверху и по центру */
+    padding: 20px;
+    border: 1px solid #888;
+    /*width: 50%; !* Может быть больше или меньше, в зависимости от размера экрана *!*/
+    max-width: 710px;
+    min-height: 73px;
+    position: relative;
+}
+
+.modal-content img {
+    border-radius: 50%;
+}
+
+.modal-content img {
+    border-radius: 50%;
+}
+
+.modal-content h3 {
+    margin-top: 10px;
+}
+
+.divSub {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: start;
+    width: 23%;
+    margin: 30px 5px 5px 5px;
+    /*padding: 10px;*/
+    text-align: center;
+}
+
+/* Кнопка закрытия */
+.close {
+    color: #aaa;
+    /*float: right;*/
+    font-size: 28px;
+    font-weight: bold;
+
+    position: absolute;
+    left: auto;
+    right: 20px;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 767px) {
+.profile{
+    flex-direction: column;
+}
+.profile__info{
+    margin-left: 0;
+}
 }

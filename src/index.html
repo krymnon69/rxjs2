@@ -6,17 +6,34 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>RxJS</title>
+  <link rel="stylesheet" href="https://allfont.ru/cache/fonts/cyrillicold_59ab5d221e898731dece84f7b2fe9816.ttf">
   <script src="https://vk.com/js/api/openapi.js?169" type="text/javascript"></script>
 </head>
 
 <div class="container">
 
   <div class="autorization">
-    <button type="button" id = "auto"> Вход ВК </button>
-      <input maxlength="40" onfocus="this.value=''" placeholder="Поиск"/>
-    <button type="button" id = "an_auto"> Обнулить сессию (токен, id) </button>
+    <button type="button" class = "button auto"> Войти </button>
+    <h6>Вы авторизованы!</h6>
+    <input class = 'autorization__input' maxlength="40" onfocus="this.value=''" placeholder="Поиск"/>
+    <button type="button" class = "button an_auto"> Выход </button>
   </div>
   <div class = 'profile'>
+    <div class = 'profile__img'></div>
+    <div class = 'profile__info'>
+      <div class = "info__name"></div>
+      <div class = 'info__info'>
+        <div class = "info__label"></div>
+        <div class = "info__item"></div>
+      </div>
+      <div class = 'info__detail'></div>
+      <div class = 'info__counters'></div>
+    </div>
+  </div>
+  <div class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+    </div>
   </div>
 
 <!--  <div class="row">-->
