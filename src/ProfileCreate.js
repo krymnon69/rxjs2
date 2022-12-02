@@ -5,7 +5,12 @@ const profileInfo = document.querySelector('.profile__info');
 const profileName = document.querySelector('.info__name');
 
 function profileCreate(obj) {
+  // Для замены элемента применяется метод replaceChild(newNode, oldNode)
   const source = obj.response[0];
+
+  // console.log(obj);
+
+  localStorage.setItem('currentProfile', JSON.stringify(source))
 
   profileImg.style.display = 'flex';
   profileName.style.display = 'flex';
@@ -14,9 +19,7 @@ function profileCreate(obj) {
   profileImg.appendChild(elementCreate('img', '', '', source.photo_200));
   profileName.appendChild(elementCreate('h1', `${source.first_name} ${source.last_name}`));
 
-  const options = {
-    month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false,
-  };
+  const options = { month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false };
   const date = new Date(source.last_seen.time * 1000);
   if (source.online !== 1) profileName.appendChild(elementCreate('h2', `Заходил ${date.toLocaleDateString('UTC', options)}`));
   if (source.online === 1) profileName.appendChild(elementCreate('h2', 'Online'));
@@ -38,28 +41,30 @@ function profileCreate(obj) {
 
   const infoDetail = document.querySelector('.info__detail');
   infoDetail.appendChild(elementCreate('a', 'Показать подробную информацию'));
+  // console.log(source.is_closed );
+  // if (source.is_closed === true && source.can_access_closed === true) {
+    const infoCounters = document.querySelector('.info__counters');
 
-  const infoCounters = document.querySelector('.info__counters');
+    const divFollowers = infoCounters.appendChild(elementCreate('div', '', 'button__counters'));
+    divFollowers.appendChild(elementCreate('button', '', 'counters-followers'));
+    divFollowers.appendChild(elementCreate('label', source.counters.clips_followers));
+    divFollowers.appendChild(elementCreate('label', 'подписчиков'));
 
-  const divFollowers = infoCounters.appendChild(elementCreate('div', '', 'button__counters'));
-  divFollowers.appendChild(elementCreate('button', '', 'counters-followers'));
-  divFollowers.appendChild(elementCreate('label', source.counters.clips_followers));
-  divFollowers.appendChild(elementCreate('label', 'подписчиков'));
+    const divFotos = infoCounters.appendChild(elementCreate('div', '', 'button__fotos'));
+    divFotos.appendChild(elementCreate('button', '', 'counters-fotos'));
+    divFotos.appendChild(elementCreate('label', source.counters.photos));
+    divFotos.appendChild(elementCreate('label', 'фотографии'));
 
-  const divFotos = infoCounters.appendChild(elementCreate('div', '', 'button__fotos'));
-  divFotos.appendChild(elementCreate('button', '', 'counters-fotos'));
-  divFotos.appendChild(elementCreate('label', source.counters.photos));
-  divFotos.appendChild(elementCreate('label', 'фотографии'));
+    const divFriends = infoCounters.appendChild(elementCreate('div', '', 'button__friends'));
+    divFriends.appendChild(elementCreate('button', '', 'counters-friends'));
+    divFriends.appendChild(elementCreate('label', source.counters.friends));
+    divFriends.appendChild(elementCreate('label', 'друзей'));
 
-  const divFriends = infoCounters.appendChild(elementCreate('div', '', 'button__friends'));
-  divFriends.appendChild(elementCreate('button', '', 'counters-friends'));
-  divFriends.appendChild(elementCreate('label', source.counters.friends));
-  divFriends.appendChild(elementCreate('label', 'друзей'));
-
-  const divGroups = infoCounters.appendChild(elementCreate('div', '', 'button__groups'));
-  divGroups.appendChild(elementCreate('button', '', 'counters-groups'));
-  divGroups.appendChild(elementCreate('label', source.counters.groups));
-  divGroups.appendChild(elementCreate('label', 'сообществ'));
+    const divGroups = infoCounters.appendChild(elementCreate('div', '', 'button__groups'));
+    divGroups.appendChild(elementCreate('button', '', 'counters-groups'));
+    divGroups.appendChild(elementCreate('label', source.counters.groups));
+    divGroups.appendChild(elementCreate('label', 'сообществ'));
+  // }
 }
 
 function removeProfile() {
